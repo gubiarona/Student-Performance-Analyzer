@@ -1,0 +1,210 @@
+
+# ============================================
+# STUDENT PERFORMANCE ANALYZER
+# ============================================
+# Project Proposal Application
+# Object-Oriented Programming
+# ============================================
+
+
+# ============================================
+# STUDENT CLASS
+# ============================================
+
+class Student:
+
+    def __init__(self, name, math, english, science):
+        self.__name = name
+        self.__math = math
+        self.__english = english
+        self.__science = science
+        self.__average = 0
+        self.__grade = ""
+
+    # GETTERS
+    def get_name(self):
+        return self.__name
+
+    def get_math(self):
+        return self.__math
+
+    def get_english(self):
+        return self.__english
+
+    def get_science(self):
+        return self.__science
+
+    def get_average(self):
+        return self.__average
+
+    def get_grade(self):
+        return self.__grade
+
+    # SETTERS
+    def set_average(self, average):
+        self.__average = average
+
+    def set_grade(self, grade):
+        self.__grade = grade
+
+
+# ============================================
+# GRADE PROCESSOR CLASS
+# ============================================
+
+class GradeProcessor:
+
+    def calculate_average(self, student):
+
+        average = (
+            student.get_math() +
+            student.get_english() +
+            student.get_science()
+        ) / 3
+
+        student.set_average(average)
+
+    def assign_grade(self, student):
+
+        average = student.get_average()
+
+        if average >= 90:
+            grade = "A"
+
+        elif average >= 80:
+            grade = "B"
+
+        elif average >= 75:
+            grade = "C"
+
+        else:
+            grade = "F"
+
+        student.set_grade(grade)
+
+    def rank_students(self, students):
+
+        ranked = sorted(
+            students,
+            key=lambda student: student.get_average(),
+            reverse=True
+        )
+
+        return ranked
+
+
+# ============================================
+# OUTPUT WRITER CLASS
+# ============================================
+
+class OutputWriter:
+
+    def display_report(self, students):
+
+        print("\n")
+        print("========================================")
+        print("      STUDENT PERFORMANCE REPORT")
+        print("========================================")
+
+        rank = 1
+
+        for student in students:
+
+            print(f"\nRank #{rank}")
+            print("----------------------------------------")
+            print("Student Name :", student.get_name())
+            print("Math Score   :", student.get_math())
+            print("English Score:", student.get_english())
+            print("Science Score:", student.get_science())
+            print("Average      :", round(student.get_average(), 2))
+            print("Final Grade  :", student.get_grade())
+
+            rank += 1
+
+        print("\n========================================")
+
+    def export_report(self, students):
+
+        file = open("report.txt", "w")
+
+        file.write("=====================================\n")
+        file.write(" STUDENT PERFORMANCE REPORT\n")
+        file.write("=====================================\n")
+
+        rank = 1
+
+        for student in students:
+
+            file.write(f"\nRank #{rank}\n")
+            file.write("-------------------------------------\n")
+            file.write(f"Student Name : {student.get_name()}\n")
+            file.write(f"Math Score   : {student.get_math()}\n")
+            file.write(f"English Score: {student.get_english()}\n")
+            file.write(f"Science Score: {student.get_science()}\n")
+            file.write(f"Average      : {round(student.get_average(), 2)}\n")
+            file.write(f"Final Grade  : {student.get_grade()}\n")
+
+            rank += 1
+
+        file.close()
+
+        print("\nReport exported successfully!")
+        print("File Name: report.txt")
+
+
+# ============================================
+# MAIN APPLICATION CLASS
+# ============================================
+
+class App:
+
+    def __init__(self):
+
+        self.students = []
+        self.processor = GradeProcessor()
+        self.writer = OutputWriter()
+
+    def run(self):
+
+        print("========================================")
+        print("     STUDENT PERFORMANCE ANALYZER")
+        print("========================================")
+
+        number_of_students = int(input("\nEnter number of students: "))
+
+        for i in range(number_of_students):
+
+            print(f"\nSTUDENT #{i + 1}")
+
+            name = input("Enter Student Name: ")
+
+            math = float(input("Enter Math Score: "))
+            english = float(input("Enter English Score: "))
+            science = float(input("Enter Science Score: "))
+
+            # CREATE STUDENT OBJECT
+            student = Student(name, math, english, science)
+
+            # PROCESS DATA
+            self.processor.calculate_average(student)
+            self.processor.assign_grade(student)
+
+            # STORE STUDENT
+            self.students.append(student)
+
+        # RANK STUDENTS
+        ranked_students = self.processor.rank_students(self.students)
+
+        # DISPLAY REPORT
+        self.writer.display_report(ranked_students)
+
+        # EXPORT REPORT
+        self.writer.export_report(ranked_students)
+
+
+# ============================================
+# RUN APPLICATION
+# ============================================
+
+app = App()
+app.run()
